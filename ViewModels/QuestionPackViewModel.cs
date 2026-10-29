@@ -1,0 +1,55 @@
+﻿using ITHS_LABB_2_Quiz_Configurator.Models;
+using System.Collections.ObjectModel;
+
+namespace ITHS_LABB_2_Quiz_Configurator.ViewModels;
+
+class QuestionPackViewModel : ViewModelBase
+{
+    private readonly QuestionPack _model;
+
+    public QuestionPackViewModel(QuestionPack model)
+    {
+        _model = model;
+        Questions = new ObservableCollection<Question>(_model.Questions);
+    }
+
+    public string Name
+    {
+        get => _model.Name;
+        set
+        {
+            if (_model.Name == value)
+                return;
+
+            _model.Name = value;
+            NotifyPropertyChanged();
+        }
+    }
+    public Difficulty Difficulty
+    {
+        get => _model.Difficulty;
+        set
+        {
+            if (_model.Difficulty == value)
+                return;
+
+            _model.Difficulty = value;
+            NotifyPropertyChanged();
+        }
+    }
+
+    public int TimeLimitInSeconds
+    {
+        get => _model.TimeLimitInSeconds;
+        set
+        {
+            if (_model.TimeLimitInSeconds == value)
+                return;
+
+            _model.TimeLimitInSeconds = value;
+            NotifyPropertyChanged();
+        }
+    }
+
+    public ObservableCollection<Question> Questions { get; }
+}
