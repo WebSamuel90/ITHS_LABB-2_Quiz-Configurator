@@ -18,7 +18,7 @@ class ViewModelBase : INotifyPropertyChanged
             return false;
 
         field = value;
-        NotifyPropertyChanged();
+        NotifyPropertyChanged(propertyName);
 
         return true;
     }

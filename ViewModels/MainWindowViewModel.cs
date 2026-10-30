@@ -13,7 +13,13 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
         public QuestionPackViewModel ActivePack
         {
             get => _activePack;
-            set => SetProperty(ref _activePack, value);
+            set
+            {
+                if (SetProperty(ref _activePack, value))
+                {
+                    ConfigurationViewModel?.NotifyActivePackChanged();
+                }
+            }
         }
 
         public PlayerViewModel? PlayerViewModel { get; }
@@ -28,7 +34,8 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
             var questionPack = new Models.QuestionPack("Mina frågor!", Difficulty.Easy);
             questionPack.Questions.Add(new Question("Vad heter Sveriges huvudstad?", "Stockholm", "Oslo", "Göteborg", "London"));
             questionPack.Questions.Add(new Question("Vad är 2 + 3", "5", "10", "8", "1"));
-            ActivePack = new QuestionPackViewModel(new QuestionPack("Mina frågor!"));
+            ActivePack = new QuestionPackViewModel(questionPack);
+
         }
     }
 }
