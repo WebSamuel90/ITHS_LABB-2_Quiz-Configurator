@@ -37,6 +37,7 @@ class QuestionPackViewModel : ViewModelBase
             NotifyPropertyChanged();
         }
     }
+    public Array Difficulties { get; } = Enum.GetValues<Difficulty>();
 
     public int TimeLimitInSeconds
     {

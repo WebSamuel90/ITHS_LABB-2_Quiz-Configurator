@@ -33,6 +33,7 @@
                     Width="20"
                     Height="20"
                     Margin="4"
+                    Click="Options_Click"
                     >
                     <fa:IconImage Icon="Sliders" />
                 </Button>
