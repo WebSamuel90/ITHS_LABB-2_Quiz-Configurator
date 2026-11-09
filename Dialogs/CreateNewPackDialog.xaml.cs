@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace ITHS_LABB_2_Quiz_Configurator.Dialogs
 {
@@ -20,6 +10,17 @@ namespace ITHS_LABB_2_Quiz_Configurator.Dialogs
         public CreateNewPackDialog()
         {
             InitializeComponent();
+
+            Loaded += (_, _) =>
+            {
+                packName.Focus();
+                packName.SelectAll();
+            };
+        }
+
+        private void Create_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
         }
     }
 }

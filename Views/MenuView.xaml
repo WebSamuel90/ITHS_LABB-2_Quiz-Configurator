@@ -12,7 +12,11 @@
     >
     <Menu>
         <MenuItem Header="_File">
-            <MenuItem Header="New Question Pack" Icon="{fa:Icon FolderPlus}" />
+            <MenuItem
+                Command="{Binding OpenCreateNewPackCommand}"
+                Header="New Question Pack"
+                Icon="{fa:Icon FolderPlus}"
+                />
             <MenuItem Header="Select Question Pack" Icon="{fa:Icon Folderopen}">
                 <MenuItem Header="Hårdkodat" Icon="{fa:Icon Folder}" />
             </MenuItem>

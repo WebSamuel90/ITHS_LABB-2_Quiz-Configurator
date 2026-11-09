@@ -1,4 +1,5 @@
-﻿using ITHS_LABB_2_Quiz_Configurator.Models;
+﻿using ITHS_LABB_2_Quiz_Configurator.Enums;
+using ITHS_LABB_2_Quiz_Configurator.Models;
 using System.Collections.ObjectModel;
 
 namespace ITHS_LABB_2_Quiz_Configurator.ViewModels;
@@ -37,7 +38,7 @@ class QuestionPackViewModel : ViewModelBase
             NotifyPropertyChanged();
         }
     }
-    public Array Difficulties { get; } = Enum.GetValues<Difficulty>();
+    public Difficulty[] Difficulties { get; } = Enum.GetValues<Difficulty>();
 
     public int TimeLimitInSeconds
     {

@@ -1,6 +1,5 @@
-﻿namespace ITHS_LABB_2_Quiz_Configurator.Models;
-
-internal enum Difficulty { Easy, Medium, Hard }
+﻿using ITHS_LABB_2_Quiz_Configurator.Enums;
+namespace ITHS_LABB_2_Quiz_Configurator.Models;
 
 class QuestionPack(string name, Difficulty difficulty = Difficulty.Medium, int timeLimitInSeconds = 30)
 {

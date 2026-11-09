@@ -10,21 +10,22 @@
     Height="240"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterOwner"
+    WindowStyle="ToolWindow"
     mc:Ignorable="d"
     >
     <StackPanel Margin="16">
         <Label Content="Pack Name:" FontWeight="Bold" />
-        <TextBox Text="{Binding ActivePack.Name}" />
+        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
         <Label Content="Difficulty" FontWeight="Bold" />
-        <ComboBox ItemsSource="{Binding ActivePack.Difficulties}" SelectedItem="{Binding ActivePack.Difficulty}" />
+        <ComboBox ItemsSource="{Binding Difficulties}" SelectedItem="{Binding Difficulty}" />
 
         <Grid>
             <Label Content="Time Limit:" FontWeight="Bold" />
             <TextBlock
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Text="{Binding ActivePack.TimeLimitInSeconds}"
+                Text="{Binding TimeLimitInSeconds}"
                 />
         </Grid>
         <Slider
@@ -33,7 +34,7 @@
             Minimum="5"
             TickFrequency="5"
             TickPlacement="BottomRight"
-            Value="{Binding ActivePack.TimeLimitInSeconds}"
+            Value="{Binding TimeLimitInSeconds}"
             />
     </StackPanel>
 </Window>
