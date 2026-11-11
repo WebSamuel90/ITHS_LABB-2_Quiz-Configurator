@@ -13,8 +13,8 @@
     mc:Ignorable="d"
     >
     <StackPanel Margin="16">
-        <Label Content="Pack Name:" FontWeight="Bold" />
-        <TextBox x:Name="packName" Text="{Binding Name}" />
+        <Label Content="Pack Name (required):" FontWeight="Bold" />
+        <TextBox x:Name="packName" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
         <Label Content="Difficulty" FontWeight="Bold" />
         <ComboBox ItemsSource="{Binding Difficulties}" SelectedItem="{Binding Difficulty}" />
@@ -50,6 +50,7 @@
                 HorizontalAlignment="Right"
                 Click="Create_Click"
                 Content="Create"
+                IsEnabled="{Binding HasValidName}"
                 />
         </StackPanel>
     </StackPanel>

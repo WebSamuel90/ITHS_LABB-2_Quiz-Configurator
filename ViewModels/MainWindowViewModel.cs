@@ -2,13 +2,18 @@
 using ITHS_LABB_2_Quiz_Configurator.Command;
 using ITHS_LABB_2_Quiz_Configurator.Enums;
 using ITHS_LABB_2_Quiz_Configurator.Models;
+using ITHS_LABB_2_Quiz_Configurator.Services;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
 {
     class MainWindowViewModel : ViewModelBase
     {
         private QuestionPackViewModel _activePack;
+
+        // File is in local app data folder.
+        private readonly string _filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "QuizConfigurator", "QuestionPackStorage.json");
         public event EventHandler<QuestionPackViewModel>? OpenCreateNewPack;
         public ObservableCollection<QuestionPackViewModel> Packs { get; } = new();
         public RelayCommand OpenCreateNewPackCommand { get; }
@@ -25,10 +30,32 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
             }
         }
 
-        public void AddPack(QuestionPackViewModel pack)
+        public async Task AddPack(QuestionPackViewModel pack)
         {
+
+            var packsToSave = Packs.Select(p => p.ToModel()).ToList();
+            packsToSave.Add(pack.ToModel());
+
+            await QuestionPackStorage.SavePacksToJsonFile(packsToSave, _filePath);
+
             Packs.Add(pack);
             ActivePack = pack;
+        }
+
+        public async Task LoadPacks()
+        {
+            var packs = await QuestionPackStorage.LoadPacksFromJsonFile(_filePath);
+            Packs.Clear();
+
+            foreach (var pack in packs)
+            {
+                Packs.Add(new QuestionPackViewModel(pack));
+            }
+
+            if (Packs.Count > 0)
+            {
+                ActivePack = Packs[0];
+            }
         }
 
         public PlayerViewModel? PlayerViewModel { get; }

@@ -24,8 +24,12 @@ class QuestionPackViewModel : ViewModelBase
 
             _model.Name = value;
             NotifyPropertyChanged();
+            NotifyPropertyChanged(nameof(HasValidName));
         }
     }
+
+    public bool HasValidName => !string.IsNullOrWhiteSpace(Name);
+
     public Difficulty Difficulty
     {
         get => _model.Difficulty;
@@ -54,4 +58,12 @@ class QuestionPackViewModel : ViewModelBase
     }
 
     public ObservableCollection<Question> Questions { get; }
+
+    public QuestionPack ToModel()
+    {
+        return new QuestionPack(Name, Difficulty, TimeLimitInSeconds)
+        {
+            Questions = Questions.ToList()
+        };
+    }
 }
