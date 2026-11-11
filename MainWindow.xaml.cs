@@ -33,15 +33,15 @@ namespace ITHS_LABB_2_Quiz_Configurator
                 {
                     string message = ex switch
                     {
-                        UnauthorizedAccessException => "Appen saknar behörighet att läsa frågepaketen.",
-                        JsonException => "Filen med frågepaketen innehåller ogiltig JSON eller har fel format.",
-                        _ => "Frågepaketen kunde inte läsas från filen."
+                        UnauthorizedAccessException => "The app lacks permission to read the question packs.",
+                        JsonException => "The file with the question packs contains invalid JSON or has the wrong format.",
+                        _ => "The question packs could not be loaded from the file."
                     };
 
                     MessageBox.Show(
                         this,
                         message,
-                        "Läsfel",
+                        "Read Error",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                 }
@@ -75,8 +75,8 @@ namespace ITHS_LABB_2_Quiz_Configurator
 
                     MessageBox.Show(
                         this,
-                        "Frågepaketet kunde inte sparas till filen.",
-                        "Sparfel",
+                        "The question pack could not be saved to the file.",
+                        "Save Error",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                 }

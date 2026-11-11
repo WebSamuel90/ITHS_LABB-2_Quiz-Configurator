@@ -8,6 +8,8 @@ class ConfigurationViewModel : ViewModelBase
     private readonly MainWindowViewModel? _mainWindowViewModel;
     public event EventHandler? OpenPackSettings;
     public RelayCommand OpenPackSettingsCommand { get; }
+    public RelayCommand CreateNewQuestionCommand { get; }
+    public RelayCommand DeleteQuestionCommand { get; }
 
     public QuestionPackViewModel? ActivePack { get => _mainWindowViewModel?.ActivePack; }
 
@@ -22,6 +24,24 @@ class ConfigurationViewModel : ViewModelBase
 
     public ConfigurationViewModel(MainWindowViewModel? mainWindowViewModel)
     {
+        if (ActivePack != null)
+        {
+            CreateNewQuestionCommand = new RelayCommand(_ =>
+            {
+                var newQuestion = new Question("New Question", "", "", "", "");
+                ActivePack.Questions.Add(newQuestion);
+            });
+
+            DeleteQuestionCommand = new RelayCommand(_ =>
+            {
+                if (SelectedQuestion != null && ActivePack != null)
+                {
+                    ActivePack.Questions.Remove(SelectedQuestion);
+                    SelectedQuestion = null;
+                }
+            });
+        }
+
         _mainWindowViewModel = mainWindowViewModel;
         OpenPackSettingsCommand = new RelayCommand(_ => OpenPackSettings?.Invoke(this, EventArgs.Empty));
     }

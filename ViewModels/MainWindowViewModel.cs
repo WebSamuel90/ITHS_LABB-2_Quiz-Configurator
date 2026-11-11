@@ -11,8 +11,6 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
     class MainWindowViewModel : ViewModelBase
     {
         private QuestionPackViewModel _activePack;
-
-        // File is in local app data folder.
         private readonly string _filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "QuizConfigurator", "QuestionPackStorage.json");
         public event EventHandler<QuestionPackViewModel>? OpenCreateNewPack;
         public ObservableCollection<QuestionPackViewModel> Packs { get; } = new();
@@ -57,6 +55,35 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
                 ActivePack = Packs[0];
             }
         }
+
+        public async Task DeletePack(QuestionPackViewModel pack)
+        {
+            if (Packs.Contains(pack))
+            {
+                Packs.Remove(pack);
+
+                await UpdatePacks();
+
+                if (ActivePack == pack)
+                {
+                    ActivePack = Packs.FirstOrDefault();
+                }
+            }
+        }
+
+        public async Task UpdatePacks()
+        {
+            var packsToSave = Packs.Select(p => p.ToModel()).ToList();
+            await QuestionPackStorage.SavePacksToJsonFile(packsToSave, _filePath);
+        }
+
+        //public async Task UpdatePack(QuestionPackViewModel pack)
+        //{
+        //    if (Packs.Contains(pack))
+        //    {
+        //        await UpdatePacks();
+        //    }
+        //}
 
         public PlayerViewModel? PlayerViewModel { get; }
         public ConfigurationViewModel? ConfigurationViewModel { get; }
