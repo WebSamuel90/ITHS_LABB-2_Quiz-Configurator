@@ -1,7 +1,5 @@
 ﻿using ITHS_LABB_2_Quiz_Configurator.Dialogs;
 using ITHS_LABB_2_Quiz_Configurator.ViewModels;
-using System.IO;
-using System.Text.Json;
 using System.Windows;
 
 namespace ITHS_LABB_2_Quiz_Configurator
@@ -18,29 +16,58 @@ namespace ITHS_LABB_2_Quiz_Configurator
             var viewModel = new MainWindowViewModel();
             DataContext = viewModel;
 
-            bool packsLoaded = false;
+            bool savingOnClose = false;
+            bool savedOnClose = false;
+
+            Closing += async (_, e) =>
+            {
+                if (!viewModel.PacksLoaded || savedOnClose)
+                    return;
+
+                e.Cancel = true;
+
+                if (savingOnClose)
+                    return;
+
+                savingOnClose = true;
+
+                try
+                {
+                    await viewModel.UpdatePacks();
+
+                    var errorMessage = viewModel.SaveErrorMessage;
+
+                    if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        MessageBox.Show(
+                            this,
+                            errorMessage,
+                            "Save Error",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+
+                        return;
+                    }
+                }
+                finally
+                {
+                    savingOnClose = false;
+                }
+
+                savedOnClose = true;
+                Close();
+            };
 
             this.Loaded += async (_, _) =>
             {
-                try
-                {
-                    await viewModel.LoadPacks();
-                    packsLoaded = true;
-                }
-                catch (Exception ex) when (ex is IOException
-                           or UnauthorizedAccessException
-                           or JsonException)
-                {
-                    string message = ex switch
-                    {
-                        UnauthorizedAccessException => "The app lacks permission to read the question packs.",
-                        JsonException => "The file with the question packs contains invalid JSON or has the wrong format.",
-                        _ => "The question packs could not be loaded from the file."
-                    };
+                await viewModel.LoadPacks();
+                var errorMessage = viewModel.LoadErrorMessage;
 
+                if (!string.IsNullOrEmpty(errorMessage))
+                {
                     MessageBox.Show(
                         this,
-                        message,
+                        errorMessage,
                         "Read Error",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
@@ -50,11 +77,6 @@ namespace ITHS_LABB_2_Quiz_Configurator
 
             viewModel.OpenCreateNewPack += async (_, draft) =>
             {
-                if (!packsLoaded)
-                {
-                    return;
-                }
-
                 var dialog = new CreateNewPackDialog
                 {
                     Owner = this,
@@ -66,21 +88,18 @@ namespace ITHS_LABB_2_Quiz_Configurator
                     return;
                 }
 
-                try
-                {
-                    await viewModel.AddPack(draft);
-                }
-                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-                {
+                await viewModel.AddPack(draft);
+                var errorMessage = viewModel.SaveErrorMessage;
 
+                if (!string.IsNullOrEmpty(errorMessage))
+                {
                     MessageBox.Show(
                         this,
-                        "The question pack could not be saved to the file.",
+                        errorMessage,
                         "Save Error",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                 }
-
             };
         }
     }

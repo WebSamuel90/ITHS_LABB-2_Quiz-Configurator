@@ -6,9 +6,9 @@
     xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
     xmlns:local="clr-namespace:ITHS_LABB_2_Quiz_Configurator.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="ConfigurationRoot"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    DataContext="{Binding ConfigurationViewModel}"
     mc:Ignorable="d"
     >
     <Grid>
@@ -41,6 +41,7 @@
                     Width="20"
                     Height="20"
                     Margin="4"
+                    Command="{Binding CreateNewQuestionCommand}"
                     >
                     <fa:IconImage Icon="Plus" />
                 </Button>
@@ -49,6 +50,7 @@
                     Width="20"
                     Height="20"
                     Margin="4"
+                    Command="{Binding DeleteQuestionCommand}"
                     >
                     <fa:IconImage Icon="Minus" />
                 </Button>
@@ -77,12 +79,14 @@
             Grid.Column="1"
             Margin="16,0"
             DataContext="{Binding SelectedQuestion}"
+            Visibility="{Binding DataContext.HasSelectedQuestion, ElementName=ConfigurationRoot}"
             >
             <Label Content="Question" FontWeight="Bold" />
             <TextBox
                 Height="80"
                 Margin="0,0,0,40"
                 Text="{Binding Query}"
+                TextWrapping="Wrap"
                 />
 
             <Label Content="Correct Answer" FontWeight="Bold" />

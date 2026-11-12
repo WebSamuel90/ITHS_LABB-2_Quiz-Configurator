@@ -5,10 +5,358 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ITHS_LABB_2_Quiz_Configurator.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="PlayerViewRoot"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    DataContext="{Binding PlayerViewModel}"
     mc:Ignorable="d"
     >
-    <Grid />
+    <Grid>
+
+
+        <Grid x:Name="QuizView">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsQuizFinished}" Value="False">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                Margin="28"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                FontSize="32"
+                FontWeight="Bold"
+                Text="12"
+                />
+
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock
+                    Margin="0,0,0,16"
+                    FontSize="42"
+                    Text="{Binding CurrentQuestion.Query}"
+                    />
+                <TextBlock HorizontalAlignment="Center" FontSize="18">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}Question {0} of {1}">
+                            <Binding Path="CurrentQuestionNumber" />
+                            <Binding Path="QuizQuestions.Count" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </StackPanel>
+
+            <Grid
+                Grid.Row="1"
+                Width="640"
+                HorizontalAlignment="Center"
+                >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="8"
+                    Background="LightGray"
+                    Command="{Binding SubmitAnswerCommand}"
+                    CommandParameter="{Binding CurrentAnswers[0]}"
+                    FontSize="24"
+                    >
+                    <Grid>
+                        <Image
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Left"
+                            Source="/Assets/correct.png"
+                            >
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding CorrectAnswerIndex}" Value="0" />
+                                                <Condition Binding="{Binding IsAnswerCorrect}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger>
+
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding CorrectAnswerIndex}" Value="0" />
+                                                <Condition Binding="{Binding IsAnswerCorrect}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+
+                        <Image
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Left"
+                            Source="/Assets/incorrect.png"
+                            >
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding SelectedAnswerIndex}" Value="0" />
+                                                <Condition Binding="{Binding IsAnswerCorrect}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <TextBlock Text="{Binding CurrentAnswers[0]}" />
+                    </Grid>
+                </Button>
+                <Button
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="8"
+                    Background="LightGray"
+                    Command="{Binding SubmitAnswerCommand}"
+                    CommandParameter="{Binding CurrentAnswers[1]}"
+                    FontSize="24"
+                    >
+                    <Grid>
+                        <Image
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Left"
+                            Source="/Assets/correct.png"
+                            >
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding CorrectAnswerIndex}" Value="1" />
+                                                <Condition Binding="{Binding IsAnswerCorrect}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger>
+
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding CorrectAnswerIndex}" Value="1" />
+                                                <Condition Binding="{Binding IsAnswerCorrect}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+
+                        <Image
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Left"
+                            Source="/Assets/incorrect.png"
+                            >
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding SelectedAnswerIndex}" Value="1" />
+                                                <Condition Binding="{Binding IsAnswerCorrect}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <TextBlock Text="{Binding CurrentAnswers[1]}" />
+                    </Grid>
+                </Button>
+                <Button
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="8"
+                    Background="LightGray"
+                    Command="{Binding SubmitAnswerCommand}"
+                    CommandParameter="{Binding CurrentAnswers[2]}"
+                    FontSize="24"
+                    >
+                    <Grid>
+                        <Image
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Left"
+                            Source="/Assets/correct.png"
+                            >
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding CorrectAnswerIndex}" Value="2" />
+                                                <Condition Binding="{Binding IsAnswerCorrect}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger>
+
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding CorrectAnswerIndex}" Value="2" />
+                                                <Condition Binding="{Binding IsAnswerCorrect}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+
+                        <Image
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Left"
+                            Source="/Assets/incorrect.png"
+                            >
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding SelectedAnswerIndex}" Value="2" />
+                                                <Condition Binding="{Binding IsAnswerCorrect}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <TextBlock Text="{Binding CurrentAnswers[2]}" />
+                    </Grid>
+                </Button>
+                <Button
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="8"
+                    Background="LightGray"
+                    Command="{Binding SubmitAnswerCommand}"
+                    CommandParameter="{Binding CurrentAnswers[3]}"
+                    FontSize="24"
+                    >
+                    <Grid>
+                        <Image
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Left"
+                            Source="/Assets/correct.png"
+                            >
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding CorrectAnswerIndex}" Value="3" />
+                                                <Condition Binding="{Binding IsAnswerCorrect}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger>
+
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding CorrectAnswerIndex}" Value="3" />
+                                                <Condition Binding="{Binding IsAnswerCorrect}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+
+                        <Image
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Left"
+                            Source="/Assets/incorrect.png"
+                            >
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding SelectedAnswerIndex}" Value="3" />
+                                                <Condition Binding="{Binding IsAnswerCorrect}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <TextBlock Text="{Binding CurrentAnswers[3]}" />
+                    </Grid>
+                </Button>
+            </Grid>
+        </Grid>
+        <Grid x:Name="ResultView">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsQuizFinished}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock FontSize="40" Text="Complete!" />
+                <TextBlock Margin="0,8,0,0">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}You got {0} out of {1} answers correct">
+                            <Binding Path="Score" />
+                            <Binding Path="QuizQuestions.Count" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <Button
+                    Margin="24"
+                    Padding="4"
+                    Command="{Binding RestartQuizCommand}"
+                    >
+                    <TextBlock Text="Restart!" />
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
 </UserControl>

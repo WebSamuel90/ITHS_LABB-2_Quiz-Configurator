@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:ITHS_LABB_2_Quiz_Configurator"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:ITHS_LABB_2_Quiz_Configurator.Views"
+    xmlns:vm="clr-namespace:ITHS_LABB_2_Quiz_Configurator.ViewModels"
     Title="Quiz Configurator"
     Width="800"
     Height="500"
@@ -13,6 +14,18 @@
     MinHeight="500"
     mc:Ignorable="d"
     >
+    <!--<Window.InputBindings>
+        <KeyBinding Key="F4" Modifiers="Alt" />
+    </Window.InputBindings>-->
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:ConfigurationViewModel}">
+            <views:ConfigurationView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PlayerViewModel}">
+            <views:PlayerView />
+        </DataTemplate>
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -20,7 +33,7 @@
         </Grid.RowDefinitions>
 
         <views:MenuView Grid.Row="0" />
-        <views:ConfigurationView Grid.Row="1" />
-        <!--<views:PlayerView Grid.Row="1" />-->
+
+        <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}" />
     </Grid>
 </Window>

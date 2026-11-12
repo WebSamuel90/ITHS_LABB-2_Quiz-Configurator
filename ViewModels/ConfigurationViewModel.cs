@@ -1,5 +1,6 @@
 ﻿using ITHS_LABB_2_Quiz_Configurator.Command;
 using ITHS_LABB_2_Quiz_Configurator.Models;
+using System.Windows;
 
 namespace ITHS_LABB_2_Quiz_Configurator.ViewModels;
 
@@ -19,28 +20,33 @@ class ConfigurationViewModel : ViewModelBase
     public Question? SelectedQuestion
     {
         get => _selectedQuestion;
-        set => SetProperty(ref _selectedQuestion, value);
+        set
+        {
+            if (SetProperty(ref _selectedQuestion, value))
+                NotifyPropertyChanged(nameof(HasSelectedQuestion));
+        }
     }
+
+    public Visibility HasSelectedQuestion => SelectedQuestion != null ? Visibility.Visible : Visibility.Hidden;
 
     public ConfigurationViewModel(MainWindowViewModel? mainWindowViewModel)
     {
-        if (ActivePack != null)
-        {
-            CreateNewQuestionCommand = new RelayCommand(_ =>
-            {
-                var newQuestion = new Question("New Question", "", "", "", "");
-                ActivePack.Questions.Add(newQuestion);
-            });
 
-            DeleteQuestionCommand = new RelayCommand(_ =>
+        CreateNewQuestionCommand = new RelayCommand(_ =>
+        {
+            var newQuestion = new Question("New Question", "", ["", "", ""]);
+            ActivePack?.Questions.Add(newQuestion);
+        });
+
+        DeleteQuestionCommand = new RelayCommand(_ =>
+        {
+            if (SelectedQuestion != null && ActivePack != null)
             {
-                if (SelectedQuestion != null && ActivePack != null)
-                {
-                    ActivePack.Questions.Remove(SelectedQuestion);
-                    SelectedQuestion = null;
-                }
-            });
-        }
+                ActivePack.Questions.Remove(SelectedQuestion);
+                SelectedQuestion = null;
+            }
+        });
+
 
         _mainWindowViewModel = mainWindowViewModel;
         OpenPackSettingsCommand = new RelayCommand(_ => OpenPackSettings?.Invoke(this, EventArgs.Empty));

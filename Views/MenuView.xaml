@@ -17,15 +17,29 @@
                 Header="New Question Pack"
                 Icon="{fa:Icon FolderPlus}"
                 />
-            <MenuItem Header="Select Question Pack" Icon="{fa:Icon Folderopen}">
-                <MenuItem Header="Hårdkodat" Icon="{fa:Icon Folder}" />
+            <MenuItem
+                Header="Select Question Pack"
+                Icon="{fa:Icon Folderopen}"
+                ItemsSource="{Binding Packs}"
+                >
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="{x:Type MenuItem}">
+                        <Setter Property="MenuItem.Header" Value="{Binding Name}" />
+                        <Setter Property="MenuItem.Command" Value="{Binding DataContext.SelectQuestionPackCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+                        <Setter Property="CommandParameter" Value="{Binding}" />
+                    </Style>
+
+                </MenuItem.ItemContainerStyle>
             </MenuItem>
             <MenuItem
+                Command="{Binding DeletePackCommand}"
+                CommandParameter="{Binding ActivePack}"
                 Header="Delete Question Pack"
                 Icon="{fa:Icon FolderMinus}"
-                IsEnabled="false"
+                IsEnabled="{Binding HasMoreThanOne}"
                 />
             <Separator />
+
             <MenuItem
                 Header="Import Questions"
                 Icon="{fa:Icon CloudArrowDown}"
@@ -41,16 +55,19 @@
 
         <MenuItem Header="_Edit">
             <MenuItem
+                Command="{Binding ConfigurationViewModel.CreateNewQuestionCommand}"
                 Header="Add Question"
                 Icon="{fa:Icon Plus}"
                 InputGestureText="Insert"
                 />
             <MenuItem
+                Command="{Binding ConfigurationViewModel.DeleteQuestionCommand}"
                 Header="Remove Question"
                 Icon="{fa:Icon Minus}"
                 InputGestureText="Delete"
                 />
             <MenuItem
+                Command="{Binding ConfigurationViewModel.OpenPackSettingsCommand}"
                 Header="Pack Options"
                 Icon="{fa:Icon Sliders}"
                 InputGestureText="Ctrl+O"
@@ -59,11 +76,13 @@
 
         <MenuItem Header="_View">
             <MenuItem
+                Command="{Binding ShowPlayerViewModelCommand}"
                 Header="Play"
                 Icon="{fa:Icon Play}"
                 InputGestureText="Ctrl+P"
                 />
             <MenuItem
+                Command="{Binding ShowConfigurationViewModelCommand}"
                 Header="Edit"
                 Icon="{fa:Icon Edit}"
                 InputGestureText="Ctrl+E"

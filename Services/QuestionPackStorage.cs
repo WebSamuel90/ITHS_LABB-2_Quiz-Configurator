@@ -8,9 +8,8 @@ namespace ITHS_LABB_2_Quiz_Configurator.Services
     {
         public static async Task SavePacksToJsonFile(List<QuestionPack> packs, string filePath)
         {
-
             var directory = Path.GetDirectoryName(filePath)
-                ?? throw new ArgumentException("Sökvägen måste innehålla en mapp", nameof(filePath));
+                ?? throw new ArgumentException("The file path must include a directory", nameof(filePath));
 
             Directory.CreateDirectory(directory);
 
