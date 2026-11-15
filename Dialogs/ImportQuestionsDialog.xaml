@@ -1,0 +1,65 @@
+﻿<Window
+    x:Class="ITHS_LABB_2_Quiz_Configurator.Dialogs.ImportQuestionsDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ITHS_LABB_2_Quiz_Configurator.Dialogs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Import Questions From Open Trivia Database"
+    Width="320"
+    Height="260"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d"
+    >
+    <StackPanel Margin="16">
+        <Label Content="Category:" FontWeight="Bold" />
+        <ComboBox
+            DisplayMemberPath="Value"
+            ItemsSource="{Binding Categories}"
+            SelectedValue="{Binding CategoryId}"
+            SelectedValuePath="Key"
+            />
+
+        <Label Content="Difficulty" FontWeight="Bold" />
+        <ComboBox ItemsSource="{Binding Difficulties}" SelectedItem="{Binding SelectedDifficulty}" />
+
+        <Grid>
+            <Label Content="Number Of Questions:" FontWeight="Bold" />
+            <TextBlock
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Text="{Binding QuestionCount}"
+                />
+        </Grid>
+        <Slider
+            IsSnapToTickEnabled="True"
+            Maximum="20"
+            Minimum="1"
+            TickFrequency="1"
+            TickPlacement="BottomRight"
+            Value="{Binding QuestionCount}"
+            />
+
+        <StackPanel
+            Margin="0,16,0,0"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal"
+            >
+            <Button
+                Margin="16,0"
+                Padding="8,0"
+                HorizontalAlignment="Left"
+                Content="Cancel"
+                IsCancel="True"
+                />
+            <Button
+                Margin="16,0"
+                Padding="8,0"
+                HorizontalAlignment="Right"
+                Click="Import_Click"
+                Content="Import"
+                />
+        </StackPanel>
+    </StackPanel>
+</Window>

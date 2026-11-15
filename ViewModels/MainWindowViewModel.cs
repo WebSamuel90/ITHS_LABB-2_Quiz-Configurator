@@ -5,6 +5,7 @@ using ITHS_LABB_2_Quiz_Configurator.Models;
 using ITHS_LABB_2_Quiz_Configurator.Services;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Net.Http;
 using System.Text.Json;
 
 namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
@@ -15,9 +16,11 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
         private bool _packsLoaded;
         private string? _loadErrorMessage;
         private string? _saveErrorMessage;
+        private string? _importErrorMessage;
         private ViewModelBase? _currentViewModel;
         private readonly string _filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "QuizConfigurator", "QuestionPackStorage.json");
         public event EventHandler<QuestionPackViewModel>? OpenCreateNewPack;
+        public event EventHandler<ImportOptions>? OpenImportQuestions;
         public ObservableCollection<QuestionPackViewModel> Packs { get; } = new();
         public bool HasMoreThanOne => Packs.Count > 1;
         public RelayCommand ShowConfigurationViewModelCommand { get; }
@@ -25,6 +28,7 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
         public RelayCommand OpenCreateNewPackCommand { get; }
         public RelayCommand SelectQuestionPackCommand { get; }
         public RelayCommand DeletePackCommand { get; }
+        public RelayCommand ImportQuestionsCommand { get; }
 
         public QuestionPackViewModel? ActivePack
         {
@@ -35,6 +39,19 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
                 {
                     ConfigurationViewModel?.NotifyActivePackChanged();
                     NotifyQuizAvailabilityChanged();
+                    ImportQuestionsCommand.NotifyCanExecuteChange();
+                }
+            }
+        }
+        private bool _isImporting;
+        public bool IsImporting
+        {
+            get => _isImporting;
+            private set
+            {
+                if (SetProperty(ref _isImporting, value))
+                {
+                    ImportQuestionsCommand.NotifyCanExecuteChange();
                 }
             }
         }
@@ -63,6 +80,11 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
             private set => SetProperty(ref _saveErrorMessage, value);
         }
 
+        public string? ImportErrorMessage
+        {
+            get => _importErrorMessage;
+            private set => SetProperty(ref _importErrorMessage, value);
+        }
 
         public async Task AddPack(QuestionPackViewModel pack)
         {
@@ -148,6 +170,47 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
             }
         }
 
+        public async Task ImportQuestionsAsync(ImportOptions options)
+        {
+            if (IsImporting || ActivePack == null)
+            {
+                return;
+            }
+
+            ImportErrorMessage = null;
+
+            var targetPack = ActivePack;
+            IsImporting = true;
+
+            try
+            {
+                var questions = await OpenTdbService.GetQuestionsAsync(options);
+
+                foreach (var question in questions)
+                {
+                    targetPack.Questions.Add(question);
+                }
+
+                NotifyQuizAvailabilityChanged();
+            }
+            catch (HttpRequestException)
+            {
+                ImportErrorMessage = "Could not connect to OpenTDB. Please check your internet connection.";
+            }
+            catch (InvalidOperationException ex)
+            {
+                ImportErrorMessage = ex.Message;
+            }
+            catch (Exception)
+            {
+                ImportErrorMessage = "Something went wrong while importing questions. Please try again.";
+            }
+            finally
+            {
+                IsImporting = false;
+            }
+        }
+
         public void NotifyQuizAvailabilityChanged()
         {
             ShowPlayerViewModelCommand.NotifyCanExecuteChange();
@@ -205,6 +268,13 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
                     await DeletePack(pack);
                 }
             });
+
+            ImportQuestionsCommand = new RelayCommand(_ =>
+            {
+                var options = new ImportOptions();
+                OpenImportQuestions?.Invoke(this, options);
+            },
+            _ => !IsImporting && ActivePack != null);
         }
     }
 }

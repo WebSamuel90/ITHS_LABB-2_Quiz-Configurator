@@ -101,6 +101,33 @@ namespace ITHS_LABB_2_Quiz_Configurator
                         MessageBoxImage.Error);
                 }
             };
+
+            viewModel.OpenImportQuestions += async (_, options) =>
+            {
+                var dialog = new ImportQuestionsDialog
+                {
+                    Owner = this,
+                    DataContext = options
+                };
+
+                if (dialog.ShowDialog() != true)
+                {
+                    return;
+                }
+
+                await viewModel.ImportQuestionsAsync(options);
+                var errorMessage = viewModel.ImportErrorMessage;
+
+                if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    MessageBox.Show(
+                        this,
+                        errorMessage,
+                        "Import Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+            };
         }
     }
 }

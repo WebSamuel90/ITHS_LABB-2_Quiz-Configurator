@@ -36,7 +36,11 @@
             Value="{Binding TimeLimitInSeconds}"
             />
 
-        <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+        <StackPanel
+            Margin="0,8,0,0"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal"
+            >
             <Button
                 Margin="16,0"
                 Padding="8,0"

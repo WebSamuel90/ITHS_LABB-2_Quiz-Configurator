@@ -41,6 +41,7 @@
             <Separator />
 
             <MenuItem
+                Command="{Binding ImportQuestionsCommand}"
                 Header="Import Questions"
                 Icon="{fa:Icon CloudArrowDown}"
                 InputGestureText="Ctrl+I"
