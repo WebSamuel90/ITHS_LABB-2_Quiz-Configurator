@@ -1,6 +1,5 @@
 ﻿using ITHS_LABB_2_Quiz_Configurator.Command;
 using ITHS_LABB_2_Quiz_Configurator.Models;
-using System.Diagnostics;
 
 namespace ITHS_LABB_2_Quiz_Configurator.ViewModels;
 
@@ -12,9 +11,9 @@ class PlayerViewModel : ViewModelBase
     private int _currentQuestionIndex;
     private int _score;
     private bool? _isAnswerCorrect;
-    private string? _selectedAnswer;
-    private bool _IsQuizFinished;
-    private List<string> _currentAnswers = [];
+    private bool _isQuizFinished;
+    private CancellationTokenSource? _nextQuestionCts;
+    private List<AnswerOptionViewModel> _currentAnswers = [];
     public RelayCommand SubmitAnswerCommand { get; }
     public RelayCommand RestartQuizCommand { get; }
 
@@ -24,20 +23,16 @@ class PlayerViewModel : ViewModelBase
         set => SetProperty(ref _currentQuestion, value);
     }
 
-    public List<string> CurrentAnswers
+    public List<AnswerOptionViewModel> CurrentAnswers
     {
         get => _currentAnswers;
-        set
-        {
-            SetProperty(ref _currentAnswers, value);
-            NotifyPropertyChanged(nameof(CorrectAnswerIndex));
-        }
+        set => SetProperty(ref _currentAnswers, value);
     }
 
     public int CurrentQuestionIndex
     {
         get => _currentQuestionIndex;
-        set
+        private set
         {
             if (SetProperty(ref _currentQuestionIndex, value))
             {
@@ -49,7 +44,7 @@ class PlayerViewModel : ViewModelBase
     public int Score
     {
         get => _score;
-        set => SetProperty(ref _score, value);
+        private set => SetProperty(ref _score, value);
     }
     public bool? IsAnswerCorrect
     {
@@ -57,44 +52,25 @@ class PlayerViewModel : ViewModelBase
         set => SetProperty(ref _isAnswerCorrect, value);
     }
 
-    public string? SelectedAnswer
-    {
-        get => _selectedAnswer;
-        set
-        {
-            if (SetProperty(ref _selectedAnswer, value))
-            {
-                NotifyPropertyChanged(nameof(SelectedAnswerIndex));
-            }
-        }
-    }
-
     public bool IsQuizFinished
     {
-        get => _IsQuizFinished;
-        set => SetProperty(ref _IsQuizFinished, value);
+        get => _isQuizFinished;
+        private set => SetProperty(ref _isQuizFinished, value);
     }
-
-    public int SelectedAnswerIndex =>
-        SelectedAnswer == null
-            ? -1
-            : CurrentAnswers.IndexOf(SelectedAnswer);
-
-    public int CorrectAnswerIndex =>
-     CurrentQuestion == null
-         ? -1
-         : CurrentAnswers.IndexOf(CurrentQuestion.CorrectAnswer);
 
     public int CurrentQuestionNumber => CurrentQuestionIndex + 1;
 
     public void StartQuiz()
     {
+        _nextQuestionCts?.Cancel();
+        _nextQuestionCts?.Dispose();
+        _nextQuestionCts = null;
+
         QuizQuestions.Clear();
         CurrentQuestionIndex = 0;
         CurrentAnswers = [];
         Score = 0;
         IsAnswerCorrect = null;
-        SelectedAnswer = null;
         IsQuizFinished = false;
 
         var activePack = _mainWindowViewModel?.ActivePack;
@@ -104,7 +80,15 @@ class PlayerViewModel : ViewModelBase
             QuizQuestions.AddRange(activePack.Questions);
         }
 
-        ShuffleIndex(QuizQuestions);
+        if (QuizQuestions.Count == 0)
+        {
+            CurrentQuestion = null;
+            CurrentAnswers = [];
+            IsQuizFinished = true;
+            return;
+        }
+
+        Shuffle(QuizQuestions);
         CurrentQuestion = QuizQuestions.Count > 0 ? QuizQuestions[CurrentQuestionIndex] : null;
 
         if (CurrentQuestion != null)
@@ -115,11 +99,28 @@ class PlayerViewModel : ViewModelBase
 
     public async Task NextQuestion()
     {
-        await Task.Delay(1500);
+        var cts = new CancellationTokenSource();
+        _nextQuestionCts = cts;
+
+        try
+        {
+            await Task.Delay(1500, cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+        finally
+        {
+            if (ReferenceEquals(_nextQuestionCts, cts))
+            {
+                _nextQuestionCts = null;
+                cts.Dispose();
+            }
+        }
 
         if (CurrentQuestionIndex < (QuizQuestions.Count - 1))
         {
-            SelectedAnswer = null;
             CurrentQuestionIndex++;
             CurrentQuestion = QuizQuestions[CurrentQuestionIndex];
             UpdateCurrentAnswers(CurrentQuestion);
@@ -127,23 +128,27 @@ class PlayerViewModel : ViewModelBase
         }
         else
         {
-            Debug.WriteLine("Quiz finished");
             IsQuizFinished = true;
         }
 
     }
 
-    public void UpdateCurrentAnswers(Question CurrentQuestion)
+    private void UpdateCurrentAnswers(Question question)
     {
-        var answers = new List<string>();
-        answers.AddRange(CurrentQuestion.IncorrectAnswers);
-        answers.Add(CurrentQuestion.CorrectAnswer);
+        var answers = new List<AnswerOptionViewModel>
+        {
+            new(question.CorrectAnswer, true)
+        };
 
-        ShuffleIndex(answers);
+        answers.AddRange(
+            question.IncorrectAnswers.Select(answer => new AnswerOptionViewModel(answer, false))
+        );
+
+        Shuffle(answers);
         CurrentAnswers = answers;
     }
 
-    public static void ShuffleIndex<T>(List<T> list)
+    public static void Shuffle<T>(List<T> list)
     {
         int n = list.Count;
         while (n > 1)
@@ -163,23 +168,19 @@ class PlayerViewModel : ViewModelBase
 
         SubmitAnswerCommand = new RelayCommand(async (param) =>
         {
-            if (param is string submittedAnswer && CurrentQuestion != null && IsAnswerCorrect == null)
+            if (param is AnswerOptionViewModel answer && CurrentQuestion != null && IsAnswerCorrect == null && CurrentAnswers.Contains(answer))
             {
-                SelectedAnswer = submittedAnswer;
-                if (submittedAnswer == CurrentQuestion.CorrectAnswer)
+                if (answer.IsCorrect)
                 {
                     Score++;
                     IsAnswerCorrect = true;
-                    Debug.WriteLine("Correct!");
-                    Debug.WriteLine(Score);
                 }
                 else
                 {
                     IsAnswerCorrect = false;
-                    Debug.WriteLine("Incorrect!");
-                    Debug.WriteLine(Score);
-
                 }
+
+                answer.IsSelected = true;
 
                 await NextQuestion();
             }

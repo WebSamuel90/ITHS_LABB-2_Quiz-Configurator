@@ -34,6 +34,7 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
                 if (SetProperty(ref _activePack, value))
                 {
                     ConfigurationViewModel?.NotifyActivePackChanged();
+                    NotifyQuizAvailabilityChanged();
                 }
             }
         }
@@ -147,6 +148,11 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
             }
         }
 
+        public void NotifyQuizAvailabilityChanged()
+        {
+            ShowPlayerViewModelCommand.NotifyCanExecuteChange();
+        }
+
         public PlayerViewModel? PlayerViewModel { get; }
         public ConfigurationViewModel? ConfigurationViewModel { get; }
 
@@ -168,7 +174,8 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
             {
                 PlayerViewModel.StartQuiz();
                 CurrentViewModel = PlayerViewModel;
-            });
+            },
+            _ => ActivePack != null && ActivePack.Questions.Count > 0);
 
             OpenCreateNewPackCommand = new RelayCommand(_ =>
             {
@@ -185,9 +192,9 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
 
             SelectQuestionPackCommand = new RelayCommand((param) =>
             {
-                if (param is QuestionPackViewModel)
+                if (param is QuestionPackViewModel pack)
                 {
-                    ActivePack = (QuestionPackViewModel)param;
+                    ActivePack = pack;
                 }
             });
 
@@ -198,15 +205,6 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
                     await DeletePack(pack);
                 }
             });
-
-
-
-            // Temp
-            //var questionPack = new QuestionPack("Mina frågor!", Difficulty.Easy);
-            //questionPack.Questions.Add(new Question("Vad heter Sveriges huvudstad?", "Stockholm", "Oslo", "Göteborg", "London"));
-            //questionPack.Questions.Add(new Question("Vad är 2 + 3", "5", "10", "8", "1"));
-            //ActivePack = new QuestionPackViewModel(questionPack);
-
         }
     }
 }

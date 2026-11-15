@@ -36,6 +36,8 @@ class ConfigurationViewModel : ViewModelBase
         {
             var newQuestion = new Question("New Question", "", ["", "", ""]);
             ActivePack?.Questions.Add(newQuestion);
+
+            _mainWindowViewModel?.NotifyQuizAvailabilityChanged();
         });
 
         DeleteQuestionCommand = new RelayCommand(_ =>
@@ -44,6 +46,8 @@ class ConfigurationViewModel : ViewModelBase
             {
                 ActivePack.Questions.Remove(SelectedQuestion);
                 SelectedQuestion = null;
+
+                _mainWindowViewModel?.NotifyQuizAvailabilityChanged();
             }
         });
 
