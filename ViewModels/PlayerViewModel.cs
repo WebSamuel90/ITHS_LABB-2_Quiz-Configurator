@@ -1,5 +1,7 @@
 ﻿using ITHS_LABB_2_Quiz_Configurator.Command;
 using ITHS_LABB_2_Quiz_Configurator.Models;
+using System.Diagnostics;
+using System.Windows.Threading;
 
 namespace ITHS_LABB_2_Quiz_Configurator.ViewModels;
 
@@ -13,6 +15,10 @@ class PlayerViewModel : ViewModelBase
     private bool? _isAnswerCorrect;
     private bool _isQuizFinished;
     private CancellationTokenSource? _nextQuestionCts;
+    private readonly DispatcherTimer _questionTimer;
+    private int _questionTimeLimit;
+    private TimeSpan _timeRemaining;
+    private Stopwatch _stopwatch = new();
     private List<AnswerOptionViewModel> _currentAnswers = [];
     public RelayCommand SubmitAnswerCommand { get; }
     public RelayCommand RestartQuizCommand { get; }
@@ -58,13 +64,69 @@ class PlayerViewModel : ViewModelBase
         private set => SetProperty(ref _isQuizFinished, value);
     }
 
+
+    public TimeSpan TimeRemaining
+    {
+        get => _timeRemaining;
+        private set
+        {
+            SetProperty(ref _timeRemaining, value);
+            NotifyPropertyChanged(nameof(SecondsRemaining));
+        }
+    }
+    public int SecondsRemaining => (int)Math.Ceiling(TimeRemaining.TotalSeconds);
+
+    public async void QuestionTimer_Tick(object? sender, EventArgs e)
+    {
+        TimeSpan remaining = TimeSpan.FromSeconds(_questionTimeLimit) - _stopwatch.Elapsed;
+
+        if (remaining > TimeSpan.Zero)
+        {
+            TimeRemaining = remaining;
+        }
+        else
+        {
+            await HandleTimeOut();
+        }
+    }
+
+    private void StartQuestionTimer()
+    {
+        TimeRemaining = TimeSpan.FromSeconds(_questionTimeLimit);
+        _stopwatch.Restart();
+        _questionTimer.Start();
+    }
+
+    private void StopQuestionTimer()
+    {
+        _stopwatch.Stop();
+        _questionTimer.Stop();
+    }
+
+    private async Task HandleTimeOut()
+    {
+        if (IsAnswerCorrect != null)
+        { return; }
+
+        StopQuestionTimer();
+        TimeRemaining = TimeSpan.Zero;
+        IsAnswerCorrect = false;
+        var correctAnswer = CurrentAnswers.FirstOrDefault(answer => answer.IsCorrect);
+        correctAnswer?.IsRevealed = true;
+
+        await NextQuestion();
+    }
+
     public int CurrentQuestionNumber => CurrentQuestionIndex + 1;
+
 
     public void StartQuiz()
     {
         _nextQuestionCts?.Cancel();
         _nextQuestionCts?.Dispose();
         _nextQuestionCts = null;
+
+        StopQuestionTimer();
 
         QuizQuestions.Clear();
         CurrentQuestionIndex = 0;
@@ -74,6 +136,7 @@ class PlayerViewModel : ViewModelBase
         IsQuizFinished = false;
 
         var activePack = _mainWindowViewModel?.ActivePack;
+        _questionTimeLimit = activePack?.TimeLimitInSeconds ?? 30;
 
         if (activePack != null)
         {
@@ -87,6 +150,9 @@ class PlayerViewModel : ViewModelBase
             IsQuizFinished = true;
             return;
         }
+
+        StartQuestionTimer();
+
 
         Shuffle(QuizQuestions);
         CurrentQuestion = QuizQuestions.Count > 0 ? QuizQuestions[CurrentQuestionIndex] : null;
@@ -125,12 +191,12 @@ class PlayerViewModel : ViewModelBase
             CurrentQuestion = QuizQuestions[CurrentQuestionIndex];
             UpdateCurrentAnswers(CurrentQuestion);
             IsAnswerCorrect = null;
+            StartQuestionTimer();
         }
         else
         {
             IsQuizFinished = true;
         }
-
     }
 
     private void UpdateCurrentAnswers(Question question)
@@ -166,10 +232,26 @@ class PlayerViewModel : ViewModelBase
     {
         _mainWindowViewModel = mainWindowViewModel;
 
+        _questionTimer = new()
+        {
+            Interval = TimeSpan.FromSeconds(1)
+        };
+
+        _questionTimer.Tick += QuestionTimer_Tick;
+
+
         SubmitAnswerCommand = new RelayCommand(async (param) =>
         {
             if (param is AnswerOptionViewModel answer && CurrentQuestion != null && IsAnswerCorrect == null && CurrentAnswers.Contains(answer))
             {
+                if (_stopwatch.Elapsed >= TimeSpan.FromSeconds(_questionTimeLimit))
+                {
+                    await HandleTimeOut();
+                    return;
+                }
+
+                StopQuestionTimer();
+
                 if (answer.IsCorrect)
                 {
                     Score++;
@@ -180,7 +262,7 @@ class PlayerViewModel : ViewModelBase
                     IsAnswerCorrect = false;
                 }
 
-                answer.IsSelected = true;
+                answer.IsRevealed = true;
 
                 await NextQuestion();
             }

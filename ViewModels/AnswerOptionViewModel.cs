@@ -4,11 +4,11 @@
     {
         public string Text { get; }
         public bool IsCorrect { get; }
-        private bool _isSelected;
-        public bool IsSelected
+        private bool _isRevealed;
+        public bool IsRevealed
         {
-            get => _isSelected;
-            set => SetProperty(ref _isSelected, value);
+            get => _isRevealed;
+            set => SetProperty(ref _isRevealed, value);
         }
 
         public AnswerOptionViewModel(string text, bool isCorrect)

@@ -36,7 +36,7 @@
                 VerticalAlignment="Top"
                 FontSize="32"
                 FontWeight="Bold"
-                Text="12"
+                Text="{Binding SecondsRemaining}"
                 />
 
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -94,7 +94,7 @@
                                                 <Style.Triggers>
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding IsSelected}" Value="True" />
+                                                            <Condition Binding="{Binding IsRevealed}" Value="True" />
                                                             <Condition Binding="{Binding IsCorrect}" Value="False" />
                                                         </MultiDataTrigger.Conditions>
                                                         <Setter Property="Visibility" Value="Visible" />
@@ -117,7 +117,7 @@
                                                 <Style.Triggers>
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding IsSelected}" Value="True" />
+                                                            <Condition Binding="{Binding IsRevealed}" Value="True" />
                                                             <Condition Binding="{Binding IsCorrect}" Value="True" />
                                                         </MultiDataTrigger.Conditions>
                                                         <Setter Property="Visibility" Value="Visible" />
