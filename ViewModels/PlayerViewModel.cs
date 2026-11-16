@@ -151,8 +151,6 @@ class PlayerViewModel : ViewModelBase
             return;
         }
 
-        StartQuestionTimer();
-
 
         Shuffle(QuizQuestions);
         CurrentQuestion = QuizQuestions.Count > 0 ? QuizQuestions[CurrentQuestionIndex] : null;
@@ -160,6 +158,7 @@ class PlayerViewModel : ViewModelBase
         if (CurrentQuestion != null)
         {
             UpdateCurrentAnswers(CurrentQuestion);
+            StartQuestionTimer();
         }
     }
 
@@ -227,14 +226,13 @@ class PlayerViewModel : ViewModelBase
         }
     }
 
-
     public PlayerViewModel(MainWindowViewModel? mainWindowViewModel)
     {
         _mainWindowViewModel = mainWindowViewModel;
 
         _questionTimer = new()
         {
-            Interval = TimeSpan.FromSeconds(1)
+            Interval = TimeSpan.FromMilliseconds(100)
         };
 
         _questionTimer.Tick += QuestionTimer_Tick;
@@ -260,6 +258,12 @@ class PlayerViewModel : ViewModelBase
                 else
                 {
                     IsAnswerCorrect = false;
+                }
+
+                var correctAnswer = CurrentAnswers.FirstOrDefault(a => a.IsCorrect);
+                if (correctAnswer != null)
+                {
+                    correctAnswer.IsRevealed = true;
                 }
 
                 answer.IsRevealed = true;

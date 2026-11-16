@@ -61,14 +61,16 @@
         <ListBox
             Grid.Row="1"
             Margin="4"
+            HorizontalContentAlignment="Stretch"
             ItemsSource="{Binding ActivePack.Questions}"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             SelectedItem="{Binding SelectedQuestion}"
             >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel HorizontalAlignment="Left">
-                        <Label Content="Question:" FontWeight="Bold" />
-                        <TextBlock Text="{Binding Query}" />
+                        <TextBlock FontWeight="Bold" Text="Question:" />
+                        <TextBlock Text="{Binding Query}" TextWrapping="Wrap" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
