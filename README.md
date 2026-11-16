@@ -10,6 +10,12 @@ Jag valde därför att refaktorera lösningen och skapa en `AnswerOptionViewMode
 
 Refaktoreringen gjorde koden lättare att förstå och underhålla, samtidigt som jag kunde ta bort över 200 rader XAML.
 
+**Asynkron hantering med CancellationTokenSource**
+
+När spelaren svarar på en fråga väntar applikationen 1,5 sekunder innan nästa fråga visas, så att spelaren hinner se vilket svar som var rätt eller fel.
+
+Jag använder `Task.Delay` tillsammans med `CancellationTokenSource` för att kunna avbryta väntetiden om quizet startas om. Utan detta skulle en tidigare påbörjad fördröjning kunna fortsätta och påverka den nya quizomgången.
+
 **Problem och felsökning**
 
 Redan när jag byggde den första versionen av `PlayerView` märkte jag att ikonerna för rätt och fel svar hamnade ovanpå svarstexten istället för uppe i knappens vänstra hörn. Jag valde att skjuta upp problemet och fokusera på att få quizets funktionalitet att fungera först.
