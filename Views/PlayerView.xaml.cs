@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ITHS_LABB_2_Quiz_Configurator.Views
+namespace ITHS_LABB_3_Quiz_Configurator.Views
 {
     /// <summary>
     /// Interaction logic for PlayerView.xaml

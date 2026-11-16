@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace ITHS_LABB_2_Quiz_Configurator.ViewModels;
+namespace ITHS_LABB_3_Quiz_Configurator.ViewModels;
 
 class ViewModelBase : INotifyPropertyChanged
 {

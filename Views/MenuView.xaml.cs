@@ -1,7 +1,7 @@
-﻿using ITHS_LABB_2_Quiz_Configurator.ViewModels;
+﻿using ITHS_LABB_3_Quiz_Configurator.ViewModels;
 using System.Windows.Controls;
 
-namespace ITHS_LABB_2_Quiz_Configurator.Views
+namespace ITHS_LABB_3_Quiz_Configurator.Views
 {
     /// <summary>
     /// Interaction logic for MenuView.xaml

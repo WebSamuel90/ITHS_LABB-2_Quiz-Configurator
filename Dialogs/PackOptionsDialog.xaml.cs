@@ -10,7 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace ITHS_LABB_2_Quiz_Configurator.Dialogs
+namespace ITHS_LABB_3_Quiz_Configurator.Dialogs
 {
     /// <summary>
     /// Interaction logic for PackOptionsDialog.xaml

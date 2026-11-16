@@ -1,5 +1,5 @@
-﻿using ITHS_LABB_2_Quiz_Configurator.Enums;
-namespace ITHS_LABB_2_Quiz_Configurator.Models;
+﻿using ITHS_LABB_3_Quiz_Configurator.Enums;
+namespace ITHS_LABB_3_Quiz_Configurator.Models;
 
 class QuestionPack(string name, Difficulty difficulty = Difficulty.Medium, int timeLimitInSeconds = 30)
 {

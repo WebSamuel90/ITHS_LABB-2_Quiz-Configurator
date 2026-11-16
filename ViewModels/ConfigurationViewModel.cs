@@ -1,8 +1,8 @@
-﻿using ITHS_LABB_2_Quiz_Configurator.Command;
-using ITHS_LABB_2_Quiz_Configurator.Models;
+﻿using ITHS_LABB_3_Quiz_Configurator.Command;
+using ITHS_LABB_3_Quiz_Configurator.Models;
 using System.Windows;
 
-namespace ITHS_LABB_2_Quiz_Configurator.ViewModels;
+namespace ITHS_LABB_3_Quiz_Configurator.ViewModels;
 
 class ConfigurationViewModel : ViewModelBase
 {

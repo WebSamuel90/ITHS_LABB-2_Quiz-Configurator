@@ -1,8 +1,8 @@
-﻿using ITHS_LABB_2_Quiz_Configurator.Dialogs;
-using ITHS_LABB_2_Quiz_Configurator.ViewModels;
+﻿using ITHS_LABB_3_Quiz_Configurator.Dialogs;
+using ITHS_LABB_3_Quiz_Configurator.ViewModels;
 using System.Windows;
 
-namespace ITHS_LABB_2_Quiz_Configurator
+namespace ITHS_LABB_3_Quiz_Configurator
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

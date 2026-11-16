@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace ITHS_LABB_2_Quiz_Configurator.Command;
+namespace ITHS_LABB_3_Quiz_Configurator.Command;
 
 class RelayCommand : ICommand
 {

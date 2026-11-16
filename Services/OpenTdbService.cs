@@ -1,9 +1,9 @@
-﻿using ITHS_LABB_2_Quiz_Configurator.Models;
+﻿using ITHS_LABB_3_Quiz_Configurator.Models;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 
-namespace ITHS_LABB_2_Quiz_Configurator.Services
+namespace ITHS_LABB_3_Quiz_Configurator.Services
 {
     internal class OpenTdbService
     {

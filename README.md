@@ -1,4 +1,4 @@
-# ITHS_LABB-2_Quiz-Configurator
+# ITHS_LABB-3_Quiz-Configurator
 
 ### Tekniska lösningar och utmaningar
 

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace ITHS_LABB_2_Quiz_Configurator.Dialogs
+namespace ITHS_LABB_3_Quiz_Configurator.Dialogs
 {
     /// <summary>
     /// Interaction logic for CreateNewPackDialog.xaml

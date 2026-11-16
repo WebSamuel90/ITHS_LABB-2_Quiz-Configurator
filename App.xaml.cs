@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace ITHS_LABB_2_Quiz_Configurator
+namespace ITHS_LABB_3_Quiz_Configurator
 {
     /// <summary>
     /// Interaction logic for App.xaml

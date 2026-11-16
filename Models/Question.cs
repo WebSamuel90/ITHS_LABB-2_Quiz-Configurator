@@ -1,4 +1,4 @@
-﻿namespace ITHS_LABB_2_Quiz_Configurator.Models;
+﻿namespace ITHS_LABB_3_Quiz_Configurator.Models;
 
 class Question(string query, string correctAnswer, string[] incorrectAnswers)
 {
