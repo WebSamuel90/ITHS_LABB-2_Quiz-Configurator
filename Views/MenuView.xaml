@@ -48,6 +48,7 @@
                 />
             <Separator />
             <MenuItem
+                Command="{Binding ExitCommand}"
                 Header="Exit"
                 Icon="{fa:Icon DoorOpen}"
                 InputGestureText="Alt+F4"
@@ -90,6 +91,7 @@
                 />
             <Separator />
             <MenuItem
+                Command="{Binding ToggleFullscreenCommand}"
                 Header="Fullscreen"
                 Icon="{fa:Icon Expand}"
                 InputGestureText="Alt+Enter"

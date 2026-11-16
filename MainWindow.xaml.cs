@@ -9,6 +9,8 @@ namespace ITHS_LABB_2_Quiz_Configurator
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool _isFullscreen;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -18,6 +20,7 @@ namespace ITHS_LABB_2_Quiz_Configurator
 
             bool savingOnClose = false;
             bool savedOnClose = false;
+
 
             Closing += async (_, e) =>
             {
@@ -102,6 +105,21 @@ namespace ITHS_LABB_2_Quiz_Configurator
                 }
             };
 
+            viewModel.ConfirmDeletePack += async (_, pack) =>
+            {
+                var result = MessageBox.Show(
+                    this,
+                    $"Are you sure you want to delete \"{pack.Name}\"?",
+                    "Delete Question Pack",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    await viewModel.DeletePack(pack);
+                }
+            };
+
             viewModel.OpenImportQuestions += async (_, options) =>
             {
                 var dialog = new ImportQuestionsDialog
@@ -127,6 +145,24 @@ namespace ITHS_LABB_2_Quiz_Configurator
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                 }
+            };
+
+            viewModel.RequestExit += (_, _) => Close();
+
+            viewModel.RequestToggleFullscreen += (_, _) =>
+            {
+                if (!_isFullscreen)
+                {
+                    WindowStyle = WindowStyle.None;
+                    WindowState = WindowState.Maximized;
+                }
+                else
+                {
+                    WindowStyle = WindowStyle.SingleBorderWindow;
+                    WindowState = WindowState.Normal;
+                }
+
+                _isFullscreen = !_isFullscreen;
             };
         }
     }

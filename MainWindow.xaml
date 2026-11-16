@@ -14,9 +14,41 @@
     MinHeight="500"
     mc:Ignorable="d"
     >
-    <!--<Window.InputBindings>
-        <KeyBinding Key="F4" Modifiers="Alt" />
-    </Window.InputBindings>-->
+    <Window.InputBindings>
+        <KeyBinding
+            Key="I"
+            Modifiers="Control"
+            Command="{Binding ImportQuestionsCommand}" />
+
+        <KeyBinding
+            Key="Insert"
+            Command="{Binding ConfigurationViewModel.CreateNewQuestionCommand}" />
+
+        <KeyBinding
+            Key="Delete"
+            Command="{Binding ConfigurationViewModel.DeleteQuestionCommand}" />
+
+        <KeyBinding
+            Key="O"
+            Modifiers="Control"
+            Command="{Binding ConfigurationViewModel.OpenPackSettingsCommand}" />
+
+        <KeyBinding
+            Key="P"
+            Modifiers="Control"
+            Command="{Binding ShowPlayerViewModelCommand}" />
+
+        <KeyBinding
+            Key="E"
+            Modifiers="Control"
+            Command="{Binding ShowConfigurationViewModelCommand}" />
+        
+        <KeyBinding
+            Key="Enter"
+            Modifiers="Alt"
+            Command="{Binding ToggleFullscreenCommand}" />
+    </Window.InputBindings>
+
     <Window.Resources>
         <DataTemplate DataType="{x:Type vm:ConfigurationViewModel}">
             <views:ConfigurationView />

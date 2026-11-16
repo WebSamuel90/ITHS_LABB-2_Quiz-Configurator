@@ -21,6 +21,9 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
         private readonly string _filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "QuizConfigurator", "QuestionPackStorage.json");
         public event EventHandler<QuestionPackViewModel>? OpenCreateNewPack;
         public event EventHandler<ImportOptions>? OpenImportQuestions;
+        public event EventHandler<QuestionPackViewModel>? ConfirmDeletePack;
+        public event EventHandler? RequestExit;
+        public event EventHandler? RequestToggleFullscreen;
         public ObservableCollection<QuestionPackViewModel> Packs { get; } = new();
         public bool HasMoreThanOne => Packs.Count > 1;
         public RelayCommand ShowConfigurationViewModelCommand { get; }
@@ -29,6 +32,8 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
         public RelayCommand SelectQuestionPackCommand { get; }
         public RelayCommand DeletePackCommand { get; }
         public RelayCommand ImportQuestionsCommand { get; }
+        public RelayCommand ExitCommand { get; }
+        public RelayCommand ToggleFullscreenCommand { get; }
 
         public QuestionPackViewModel? ActivePack
         {
@@ -265,7 +270,7 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
             {
                 if (param is QuestionPackViewModel pack)
                 {
-                    await DeletePack(pack);
+                    ConfirmDeletePack?.Invoke(this, pack);
                 }
             });
 
@@ -275,6 +280,16 @@ namespace ITHS_LABB_2_Quiz_Configurator.ViewModels
                 OpenImportQuestions?.Invoke(this, options);
             },
             _ => !IsImporting && ActivePack != null);
+
+            ExitCommand = new RelayCommand(_ =>
+            {
+                RequestExit?.Invoke(this, EventArgs.Empty);
+            });
+
+            ToggleFullscreenCommand = new RelayCommand(_ =>
+            {
+                RequestToggleFullscreen?.Invoke(this, EventArgs.Empty);
+            });
         }
     }
 }

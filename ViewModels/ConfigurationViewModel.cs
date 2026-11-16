@@ -23,7 +23,10 @@ class ConfigurationViewModel : ViewModelBase
         set
         {
             if (SetProperty(ref _selectedQuestion, value))
+            {
                 NotifyPropertyChanged(nameof(HasSelectedQuestion));
+                DeleteQuestionCommand.NotifyCanExecuteChange();
+            }
         }
     }
 
@@ -49,7 +52,8 @@ class ConfigurationViewModel : ViewModelBase
 
                 _mainWindowViewModel?.NotifyQuizAvailabilityChanged();
             }
-        });
+        },
+        _ => SelectedQuestion != null && ActivePack != null);
 
 
         _mainWindowViewModel = mainWindowViewModel;
