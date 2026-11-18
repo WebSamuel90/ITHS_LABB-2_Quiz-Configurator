@@ -41,7 +41,8 @@ class ConfigurationViewModel : ViewModelBase
             ActivePack?.Questions.Add(newQuestion);
 
             _mainWindowViewModel?.NotifyQuizAvailabilityChanged();
-        });
+        },
+        _ => _mainWindowViewModel?.CurrentViewModel != _mainWindowViewModel?.PlayerViewModel && ActivePack != null);
 
         DeleteQuestionCommand = new RelayCommand(_ =>
         {
@@ -53,10 +54,11 @@ class ConfigurationViewModel : ViewModelBase
                 _mainWindowViewModel?.NotifyQuizAvailabilityChanged();
             }
         },
-        _ => SelectedQuestion != null && ActivePack != null);
+        _ => _mainWindowViewModel?.CurrentViewModel != _mainWindowViewModel?.PlayerViewModel && SelectedQuestion != null && ActivePack != null);
 
 
         _mainWindowViewModel = mainWindowViewModel;
-        OpenPackSettingsCommand = new RelayCommand(_ => OpenPackSettings?.Invoke(this, EventArgs.Empty));
+        OpenPackSettingsCommand = new RelayCommand(_ => OpenPackSettings?.Invoke(this, EventArgs.Empty),
+            _ => _mainWindowViewModel?.CurrentViewModel != _mainWindowViewModel?.PlayerViewModel);
     }
 }

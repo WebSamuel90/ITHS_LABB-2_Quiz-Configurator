@@ -64,7 +64,20 @@ namespace ITHS_LABB_3_Quiz_Configurator.ViewModels
         public ViewModelBase? CurrentViewModel
         {
             get => _currentViewModel;
-            private set => SetProperty(ref _currentViewModel, value);
+            private set
+            {
+                if (SetProperty(ref _currentViewModel, value))
+                {
+                    ShowPlayerViewModelCommand?.NotifyCanExecuteChange();
+                    OpenCreateNewPackCommand?.NotifyCanExecuteChange();
+                    SelectQuestionPackCommand?.NotifyCanExecuteChange();
+                    DeletePackCommand?.NotifyCanExecuteChange();
+                    ImportQuestionsCommand?.NotifyCanExecuteChange();
+                    ConfigurationViewModel?.CreateNewQuestionCommand.NotifyCanExecuteChange();
+                    ConfigurationViewModel?.DeleteQuestionCommand.NotifyCanExecuteChange();
+                    ConfigurationViewModel?.OpenPackSettingsCommand.NotifyCanExecuteChange();
+                }
+            }
         }
 
         public bool PacksLoaded
@@ -158,7 +171,6 @@ namespace ITHS_LABB_3_Quiz_Configurator.ViewModels
             }
         }
 
-
         public async Task UpdatePacks()
         {
             SaveErrorMessage = null;
@@ -243,7 +255,7 @@ namespace ITHS_LABB_3_Quiz_Configurator.ViewModels
                 PlayerViewModel.StartQuiz();
                 CurrentViewModel = PlayerViewModel;
             },
-            _ => ActivePack != null && ActivePack.Questions.Count > 0);
+            _ => CurrentViewModel != PlayerViewModel && ActivePack != null && ActivePack.Questions.Count > 0);
 
             OpenCreateNewPackCommand = new RelayCommand(_ =>
             {
@@ -256,7 +268,8 @@ namespace ITHS_LABB_3_Quiz_Configurator.ViewModels
                     new QuestionPack("", Difficulty.Easy));
 
                 OpenCreateNewPack?.Invoke(this, draft);
-            });
+            },
+            _ => CurrentViewModel != PlayerViewModel);
 
             SelectQuestionPackCommand = new RelayCommand((param) =>
             {
@@ -264,7 +277,8 @@ namespace ITHS_LABB_3_Quiz_Configurator.ViewModels
                 {
                     ActivePack = pack;
                 }
-            });
+            },
+            _ => CurrentViewModel != PlayerViewModel);
 
             DeletePackCommand = new RelayCommand(async (param) =>
             {
@@ -272,14 +286,15 @@ namespace ITHS_LABB_3_Quiz_Configurator.ViewModels
                 {
                     ConfirmDeletePack?.Invoke(this, pack);
                 }
-            });
+            },
+            _ => CurrentViewModel != PlayerViewModel);
 
             ImportQuestionsCommand = new RelayCommand(_ =>
             {
                 var options = new ImportOptions();
                 OpenImportQuestions?.Invoke(this, options);
             },
-            _ => !IsImporting && ActivePack != null);
+            _ => CurrentViewModel != PlayerViewModel && !IsImporting && ActivePack != null);
 
             ExitCommand = new RelayCommand(_ =>
             {
